@@ -1,0 +1,28 @@
+version: '3.4'
+services:
+  build:
+    build:
+      context: ./.docker/images/build/
+      args:
+        php_version: 7.2
+    restart: always
+    volumes:
+    - ./build:/opt/build
+    - ./repo/nexus:/build
+    environment:
+      XDEBUG_CONFIG: "remote_host=host.docker.internal idekey=PHPSTORM_ENKORA_BUILD"
+    networks:
+      default:
+        aliases:
+        - core
+    working_dir: /opt/build
+    stdin_open: true
+    command: sh -c "cd /build/nexus_ng/ && npm i"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+
+networks:
+  default:
